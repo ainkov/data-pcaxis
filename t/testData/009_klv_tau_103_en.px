@@ -1,0 +1,42 @@
+CHARSET="ANSI";
+AXIS-VERSION="2006";
+LANGUAGE="en";
+CREATION-DATE="20131213 09:00";
+DECIMALS=4;
+SHOWDECIMALS=1;
+MATRIX="px_en";
+SUBJECT-AREA="Trade";
+SUBJECT-CODE="KAU";
+COPYRIGHT=YES;
+DESCRIPTION="Turnover of trade 2010=100 (TOL 2008)";
+TITLE="Turnover of trade 2010=100 (TOL 2008) by Year, Period, Industry,"
+"Variable and Serie";
+CONTENTS="Turnover of trade 2010=100 (TOL 2008)";
+UNITS="2010=100";
+STUB="Year","Period";
+HEADING="Industry","Variable","Serie";
+VALUES("Year")="2012","2013";
+VALUES("Period")="November","December";
+VALUES("Industry")="G Wholesale and retail trade","45 Wholesale and retailtrade and repair of motorvehicles and motorcycles";
+VALUES("Variable")="Turnover","Volume index";
+VALUES("Serie")="Seasonally adjusted","Trend";
+TIMEVAL("Year")=TLIST(A1),"2012","2013";
+CODES("Year")="2012","2013";
+CODES("Period")="11","12";
+CODES("Industry")="02216","02217";
+CODES("Variable")="lv","mi";
+CODES("Serie")="Kausitasoitettu","Trendi";
+LAST-UPDATED="20131213 09:00";
+CONTACT="Statistics Finland, Business Statistics,# palvelut.suhdanne@stat.fi#<A HREF=http://tilastokeskus.fi/til/klv/index_en.html TARGET=_blank>Statistics' homepage</A>";
+SOURCE="Turnover of trade 2010=100 (TOL 2008), 10/2013. Statistics Finland";
+NOTE="<A HREF=http://tilastokeskus.fi/til/klv/rev_en.html TARGET=_blank>Revisions in these statistics</A> #<A HREF=http://tilastokeskus.fi/til/klv/meta_en.html/ TARGET=_blank>Description</A># <A  HREF=http://tilastokeskus.fi/til/klv/kas_en.html/ TARGET=_"
+"blank>Consepts and definitions</A>";
+DATA=
+107.9905 108.3487 99.3450 99.7029 
+95.4766 93.9335 90.6106 91.0230 
+108.7929 108.2043 100.0868 99.6783 
+97.5422 93.3340 96.2362 91.0844 
+"." "." "." "." 
+"." "." "." "." 
+"." "." "." "." 
+"." "." "." ".";

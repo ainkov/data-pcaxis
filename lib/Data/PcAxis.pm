@@ -228,6 +228,65 @@ sub datacol {
     return $datacol;
 }
 
+sub create_table {
+    my $self = shift;
+    my %args = @_;
+
+    my @rows = @{$args{'rows'}};
+    my @cols = @{$args{'columns'}};
+
+    my @variables = $self->variables;
+    my $vars_count = scalar(@variables) - 1;
+
+    my %variable_values = map { $_ => $self->vals_by_name($_) } @variables;
+
+    my $row_elements_count = 1;
+    $row_elements_count *= scalar(@{$self->vals_by_name($_)}) for @cols;
+
+    my $result = [];
+    my %var_indices;
+    my $data = $self->data;
+
+    $var_indices{$variables[$vars_count]} = -1;
+    for my $value (@$data) {
+
+        # calculate variable indices
+        my $var_i = $vars_count;
+        my $var = $variables[$var_i];
+
+        while (defined $var) {
+            $var_indices{$var} += 1;
+            if ($var_indices{$var} >= scalar(@{$variable_values{$var}})) {
+                $var_indices{$var} = 0;
+                last if --$var_i < 0;
+                $var = $variables[$var_i];
+
+            } else { $var = undef }
+        }
+
+        # calculate the new index
+        my $index = 0; my $multiplier = 1;
+        for my $n_var (reverse (@rows, @cols)) {
+            $index += ($var_indices{$n_var} || 0) * $multiplier;
+            $multiplier *= scalar(@{$variable_values{$n_var}});
+        } 
+
+        my $row_index = int($index / $row_elements_count) + scalar(@cols);
+        my $col_index = $index % $row_elements_count + scalar(@rows);
+
+        $result->[$row_index]->[$col_index] = $value;
+        
+        # adding variable values
+        my $i = 0;
+        $result->[$row_index]->[$i++] = $variable_values{$_}->[$var_indices{$_} || 0] for @rows;
+
+        $i = 0;
+        $result->[$i++]->[$col_index] = $variable_values{$_}->[$var_indices{$_} || 0] for @cols;
+    }
+
+    return $result;
+}
+
 sub _build_metadata {
     my $self = shift;
 
@@ -365,6 +424,9 @@ __END__
 
     ## Return a column of data
     my $datacol   = $px->datacol(['*', $idx_1, $idx_2, $idx_n]);
+
+    ## Create a two dimensional array
+    my $table     = $px->create_table('rows' => [$var_name1, $var_name2], 'columns' => [$var_name3, $var_name4]);
 
 =head1 DESCRIPTION
 
@@ -549,6 +611,26 @@ For example, consider a dataset containing two variables, each of which has two 
     $px->datacol([0,'*']);  # [Data value for males in 2011, Data value for males in 2012]
     $px->datacol([1,'*']);  # [Data value for females in 2011, Data value for females in 2012]
 
+=head2 create_table
+
+    my $table = $px->create_table('rows' => [$var_name1, $var_name2], 'columns' => [$var_name3, $var_name4]);
+
+This method returns the data as a two dimensional array considering the specified row and column variable names. Variables' values are also included.
+
+A simple example:
+
+    my $px = Data::PcAxis->new('path/to/PC-Axis/file');
+
+    # Two variables
+    $px->variables;       # ['Sex', 'Year']
+
+    # Each variable has two possible values
+    $px->values('Sex');     # ['Male', 'Female']
+    $px->values('Year');    # ['2011', '2012']
+
+    # [[undef, 2011, 2012], ['Male', Data males 2011, Data males 2012], ['Female', Data females 2011, Data females 2012]]
+    $px->create_table('rows' => ['Sex'], 'columns' => ['Year']) 
+    
 =head1 REFERENCES
 
 =over
